@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Căutare Zboruri</title>
+    <script>
+        function searchFlights() {
+            const departure = document.getElementById("departure").value;
+            const destination = document.getElementById("destination").value;
+            const date = document.getElementById("date").value;
+
+            // Trimitem cererea GET la backend
+            fetch(`/api/flights/search?departure=${departure}&destination=${destination}&date=${date}`)
+                .then(response => response.json())
+                .then(data => {
+                    let result = "";
+                    data.forEach(flight => {
+                        result += `<p>${flight.flight_number} - ${flight.departure} -> ${flight.destination} 
+                                    | Preț: ${flight.price} Lei | Locuri disponibile: ${flight.available_seats}</p>`;
+                    });
+                    document.getElementById("results").innerHTML = result;
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById("results").innerHTML = "A apărut o eroare la căutarea zborurilor.";
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>Căutare Zboruri</h1>
+    <label for="departure">Locație Plecare:</label>
+    <input type="text" id="departure" placeholder="Ex: București"><br><br>
+
+    <label for="destination">Destinație:</label>
+    <input type="text" id="destination" placeholder="Ex: Londra"><br><br>
+
+    <label for="date">Dată Zbor:</label>
+    <input type="date" id="date"><br><br>
+
+    <button onclick="searchFlights()">Căutare</button>
+
+    <div id="results"></div>
+</body>
+</html>
